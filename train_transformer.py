@@ -47,7 +47,7 @@ dataset = load_dataset(
 def preprocess(batch):
     # Prefijo de tarea (CLAVE)
     inputs = [
-        "translate to LSA: " + text
+        "LSA-GLOSS: " + text
         for text in batch["source"]
     ]
 

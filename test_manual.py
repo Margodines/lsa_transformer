@@ -63,4 +63,4 @@ tests = [
 ]
 
 for t in tests:
-    print(f"{t} -> {translate(t)}")
+    print(f"{t} -> {translate("LSA-GLOSS: yo voy a la escuela")}")
