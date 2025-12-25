@@ -54,7 +54,7 @@ training_args = TrainingArguments(
     output_dir=OUTPUT_DIR,
     eval_strategy="epoch",
     save_strategy="epoch",
-    learning_rate=3e-4,
+    learning_rate=2e-5,
     per_device_train_batch_size=8,
     per_device_eval_batch_size=8,
     num_train_epochs=20,
@@ -76,6 +76,5 @@ trainer = Trainer(
 
 trainer.train()
 
-# Guardado FINAL explícito
 trainer.save_model(f"{OUTPUT_DIR}/final_model")
 tokenizer.save_pretrained(f"{OUTPUT_DIR}/final_model")
