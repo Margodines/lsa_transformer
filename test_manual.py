@@ -1,7 +1,7 @@
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-MODEL_PATH = "./lsa_model/final_model"
+MODEL_PATH = "./lsa_model/best_model"
 
 print("Cargando modelo...")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
