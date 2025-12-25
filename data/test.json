@@ -1,0 +1,5 @@
+[
+  { "source": "yo voy a la universidad", "target": "YO UNIVERSIDAD" },
+  { "source": "yo estudio en casa", "target": "YO ESTUDIAR CASA" },
+  { "source": "yo no entiendo el problema", "target": "YO NO ENTENDER PROBLEMA" }
+]
