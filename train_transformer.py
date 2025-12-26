@@ -95,7 +95,7 @@ data_collator = DataCollatorForSeq2Seq(
 training_args = TrainingArguments(
     output_dir=OUTPUT_DIR,
 
-    evaluation_strategy="epoch",
+    eval_strategy="epoch",
     save_strategy="epoch",
 
     learning_rate=LR,
