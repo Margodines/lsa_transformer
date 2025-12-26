@@ -67,6 +67,14 @@ def preprocess(batch):
     model_inputs["labels"] = labels["input_ids"]
     return model_inputs
 
+
+# Aplicar tokenizacion
+
+tokenized_dataset = dataset.map(
+    preprocess,
+    batched=True,
+    remove_columns=["source", "target"]
+)
 # ======================
 # DATA COLLATOR
 # ======================
