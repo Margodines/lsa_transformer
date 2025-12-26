@@ -45,7 +45,6 @@ dataset = load_dataset(
 # ======================
 
 def preprocess(batch):
-    # Prefijo de tarea (CLAVE)
     inputs = [
         "LSA-GLOSS: " + text
         for text in batch["source"]
@@ -58,23 +57,15 @@ def preprocess(batch):
         max_length=MAX_LENGTH
     )
 
-    with tokenizer.as_target_tokenizer():
-        labels = tokenizer(
-            batch["target"],
-            truncation=True,
-            padding="max_length",
-            max_length=MAX_LENGTH
-        )
+    labels = tokenizer(
+        text_target=batch["target"],
+        truncation=True,
+        padding="max_length",
+        max_length=MAX_LENGTH
+    )
 
     model_inputs["labels"] = labels["input_ids"]
     return model_inputs
-
-
-tokenized_dataset = dataset.map(
-    preprocess,
-    batched=True,
-    remove_columns=["source", "target"]
-)
 
 # ======================
 # DATA COLLATOR
@@ -129,6 +120,7 @@ trainer = Trainer(
 # ======================
 # ENTRENAMIENTO
 # ======================
+
 
 trainer.train()
 
