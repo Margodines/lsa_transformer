@@ -1,4 +1,3 @@
-
 from transformers import (
     AutoTokenizer,
     AutoModelForSeq2SeqLM,
@@ -8,17 +7,18 @@ from transformers import (
 )
 from datasets import load_dataset
 import torch
+import os
 
 # ======================
 # CONFIGURACIÓN GENERAL
 # ======================
 
-MODEL_NAME = "google/flan-t5-base"  # mejor que t5-small para instrucciones
+MODEL_NAME = "google/flan-t5-base"
 OUTPUT_DIR = "./lsa_model"
 
 MAX_LENGTH = 64
 BATCH_SIZE = 16
-EPOCHS = 10
+EPOCHS = 20
 LR = 2e-5
 
 # ======================
@@ -45,6 +45,7 @@ dataset = load_dataset(
 # ======================
 
 def preprocess(batch):
+    # Prefijo de tarea (instrucción explícita)
     inputs = [
         "LSA-GLOSS: " + text
         for text in batch["source"]
@@ -67,14 +68,17 @@ def preprocess(batch):
     model_inputs["labels"] = labels["input_ids"]
     return model_inputs
 
-
-# Aplicar tokenizacion
-
+# Aplicar tokenización (CLAVE)
 tokenized_dataset = dataset.map(
     preprocess,
     batched=True,
     remove_columns=["source", "target"]
 )
+
+# Verificación mínima (opcional pero recomendada)
+print("🔎 Sample tokenizado:")
+print(tokenized_dataset["train"][0])
+
 # ======================
 # DATA COLLATOR
 # ======================
@@ -90,7 +94,8 @@ data_collator = DataCollatorForSeq2Seq(
 
 training_args = TrainingArguments(
     output_dir=OUTPUT_DIR,
-    eval_strategy="epoch",
+
+    evaluation_strategy="epoch",
     save_strategy="epoch",
 
     learning_rate=LR,
@@ -100,7 +105,9 @@ training_args = TrainingArguments(
     num_train_epochs=EPOCHS,
     weight_decay=0.01,
 
-    fp16=torch.cuda.is_available(),
+    # ⚠️ IMPORTANTE: desactivado para evitar NaN
+    fp16=False,
+
     logging_steps=50,
 
     save_total_limit=2,
@@ -129,16 +136,15 @@ trainer = Trainer(
 # ENTRENAMIENTO
 # ======================
 
-
 trainer.train()
 
 # ======================
 # GUARDADO FINAL
 # ======================
 
-BEST_MODEL_DIR = f"{OUTPUT_DIR}/best_model"
+BEST_MODEL_DIR = os.path.join(OUTPUT_DIR, "best_model")
 
 trainer.save_model(BEST_MODEL_DIR)
 tokenizer.save_pretrained(BEST_MODEL_DIR)
 
-print(f"\n✅ Modelo guardado en: {BEST_MODEL_DIR}")
+print(f"\n✅ Modelo guardado correctamente en: {BEST_MODEL_DIR}")
